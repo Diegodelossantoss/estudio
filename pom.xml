@@ -55,6 +55,20 @@
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+
+
+
+		<!--       ACTIVA LA POSIBILIDAD DE USAR VALIDACIONES       -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+
+
+
+
 	</dependencies>
 
 	<build>

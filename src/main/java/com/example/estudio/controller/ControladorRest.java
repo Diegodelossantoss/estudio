@@ -67,4 +67,14 @@ public class ControladorRest {
     }
 
 
+
+
+    @DeleteMapping("/api/contadores/{nombre}")
+    // Recoge el {nombre} del contador que queremos eliminar
+    public ModeloContador elimina(@PathVariable String nombre) {
+        return contadores.remove(nombre);
+        // Elimina el contador con el {nombre} que has puesto
+    }
+
+
 }
