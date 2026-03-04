@@ -13,6 +13,21 @@
         return listaAlumnos.get(id);                        // Devuelve el alumno que está en la posición id de la lista
     }
 
+
+    // GET /alumnos/carrera/Teleco → busca por carrera
+    @GetMapping("/carrera/{carrera}")
+    public List<Alumno> getAlumnosPorCarrera(@PathVariable String carrera) {
+        List<Alumno> resultado = new ArrayList<>();
+        for (Alumno a : listaAlumnos) {
+            if (a.getCarrera().equals(carrera)) {
+                resultado.add(a);
+            }
+        }
+        return resultado;
+    }
+
+
+
     @PostMapping                                                // Responde a POST /alumnos (para crear un alumno nuevo)
     public Alumno crearAlumno(@RequestBody Alumno alumno) {     // @RequestBody recibe los datos del alumno desde el cuerpo de la petición HTTP 
                                                                     y los convierte en un objeto Alumno. El nombre "crearAlumno" es solo para 
