@@ -8,24 +8,38 @@
                                                 // Lista que actúa como "base de datos" temporal (se borra al reiniciar la app)
     private List<Alumno> listaAlumnos = new ArrayList<>();
 
+
+
+
+
     @GetMapping("/{id}")                                    // Responde a GET /alumnos/5 (el número es el id)
     public Alumno getAlumno(@PathVariable int id) {         // @PathVariable captura el {id} de la URL y lo mete en la variable id
         return listaAlumnos.get(id);                        // Devuelve el alumno que está en la posición id de la lista
     }
 
 
-    // GET /alumnos/carrera/Teleco → busca por carrera
-    @GetMapping("/carrera/{carrera}")
+
+
+
+
+
+
+    @GetMapping("/carrera/{carrera}")                       
     public List<Alumno> getAlumnosPorCarrera(@PathVariable String carrera) {
-        List<Alumno> resultado = new ArrayList<>();
+                                                            // endpoint: GET /alumnos/carrera/Teleco
+                                                            // @PathVariable captura el valor de {carrera} de la URL y lo mete en la variable carrera
+                                                               por ejemplo si la URL es /alumnos/carrera/Teleco, entonces carrera = "Teleco"
+    List<Alumno> resultado = new ArrayList<>();             // lista vacía donde iremos metiendo los alumnos que coincidan
         for (Alumno a : listaAlumnos) {
-            if (a.getCarrera().equals(carrera)) {
-                resultado.add(a);
+            if (a.getCarrera().equals(carrera)) {  
+                resultado.add(a);  
             }
         }
-        return resultado;
+    return resultado;  // devolvemos la lista con todos los alumnos que tienen esa carrera
     }
- 
+
+
+
 
 
     @PostMapping                                                // Responde a POST /alumnos (para crear un alumno nuevo)
