@@ -7,8 +7,11 @@ package com.example.estudio.controller;
 import com.example.estudio.exception.ExcepcionContadorIncorrecto;
 import com.example.estudio.model.ModeloCampoIncorrecto;
 import com.example.estudio.model.ModeloContador;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +26,7 @@ public class ControladorRest {
 
 
 
+
     @PostMapping("/api/contadores")
     // EL POST SE HACE DESDE POSTMAN
     //
@@ -34,12 +38,31 @@ public class ControladorRest {
     // Dice de dónde se reciben las peticiones, en este caso de xxxxxxx/api/contadores
     @ResponseStatus(HttpStatus.CREATED)
     // Dice a Spring que devuelva ese código "CREATED"
-    public ModeloContador crea(@RequestBody ModeloContador contadorNuevo) {
+    public ModeloContador crea(@Valid @RequestBody ModeloContador contadorNuevo, BindingResult bindingResult) {
         // Recibe los datos del contador y los convierte en un objeto ModeloContador que lo llama contadorNuevo
+        // El @Valid se ha añadido luego, esto le dice a Spring que valide el objeto antes de procesarlo
+        // BindingResult se ha añadido luego, para validación. Aquí el modelo guarda los errores si los hay
+
+        if (bindingResult.hasErrors()) {
+            throw new ExcepcionContadorIncorrecto(bindingResult);
+        }
+        // Si la validación ha fallado, es decir, coge el .getErrors(), crear un nuevo ExcepcionContadorIncorrecto
+        // pasandole bindingResult como argumento
+
+        if (contadores.containsKey(contadorNuevo.nombre())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
+        // Esto va a prevenir que se cree un contador con el mismo nombre que uno ya existente
+
         contadores.put(contadorNuevo.nombre(), contadorNuevo);
         // Añade ese ModeloContador creado al HashMap de contadores con NombreContador - contadorNuevo
         return contadorNuevo;
     }
+
+
+
+
+
 
 
 
@@ -48,9 +71,17 @@ public class ControladorRest {
     // Si tienes un contador llamado Hola y otro Adiós, devuelve el valor del {nombre} que hayas escrito
     public ModeloContador contador(@PathVariable String nombre) {
         // El String nombre captura el nombre que has puesto en la URL
+
+        if (!contadores.containsKey(nombre)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        // Antes de devolver el contador, primero comprueba si existe. Si no existe, lanza error
+
         return contadores.get(nombre);
         // Devuelvetodo el objeto ModeloContador que se guardó con la clave nombre de la URL
     }
+
+
 
 
 
@@ -60,6 +91,12 @@ public class ControladorRest {
     // Asignas el valor {incremento} al contador {nombre}
 
     public ModeloContador incrementa(@PathVariable String nombre, @PathVariable Integer incremento) {
+
+        if (!contadores.containsKey(nombre)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        // Antes de devolver el contador, primero comprueba si existe. Si no existe, lanza error
+
         ModeloContador contadorActual = contadores.get(nombre);
         // Se guarda en contadorActual el contador del que has hecho un PutMapping, para luego... v v v v v v v v
         ModeloContador contadorIncrementado = new ModeloContador(nombre, contadorActual.valor() + incremento);
@@ -86,13 +123,18 @@ public class ControladorRest {
 
 
 
+    // ----------- ESTO ES PARA LAS EXCEPCIONES PERSONALIZADAS, -------------
+    // ----------- FUNCIONA CON ExceptionContadorIncorrecto y ModeloCampoIncorrecto //
 
     @ExceptionHandler(ExcepcionContadorIncorrecto.class)
+    // Esto le dice que cuando se lance ExcepcionContadorIncorrecto, se ejecute el siguiente código
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    // Hace que la respuesta tenga código de error 400
     public List<ModeloCampoIncorrecto> contadorIncorrecto(ExcepcionContadorIncorrecto ex) {
-        return ex.getErrores().stream().map(error -> new ModeloCampoIncorrecto(
-                error.getDefaultMessage(), error.getField(), error.getRejectedValue()
-        )).toList();
+        return ex.getErrores().stream().map(error -> new ModeloCampoIncorrecto(error.getDefaultMessage(),
+                error.getField(), error.getRejectedValue())).toList();
+        // Aquí hasta "new Modelo..." es siempre igual, aquí quieres devolver el mensaje, campo y codigo de error
+        // "error" siempre es igual, dejarlo así. Solo cambia los de getField etc etc...
     }
 
 
