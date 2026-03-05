@@ -9,6 +9,7 @@ import com.example.estudio.model.ModeloCampoIncorrecto;
 import com.example.estudio.model.ModeloContador;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -112,7 +113,10 @@ public class ControladorRest {
 
 
 
-
+    @PreAuthorize("hasRole('ADMIN')")
+    // Esto se ha añadido después
+    // "solo deja ejecutar este metdo a usuarios que tengan el rol ADMIN".
+    // Así solo los admins pueden borrar contadores
     @DeleteMapping("/api/contadores/{nombre}")
     // Recoge el {nombre} del contador que queremos eliminar
     public ModeloContador elimina(@PathVariable String nombre) {

@@ -59,6 +59,10 @@
 
 
 
+
+		<!--  Siempre que se toque el POM hay que doble click, MAVEN, RELOAD  -->
+
+
 		<!--       ACTIVA LA POSIBILIDAD DE USAR VALIDACIONES       -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -66,6 +70,12 @@
 		</dependency>
 
 
+
+		<!--       ACTIVA SPRING SECURITY       -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 
 
 
