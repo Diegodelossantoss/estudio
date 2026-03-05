@@ -8,6 +8,13 @@
     <p>
         <label for="email">Email: </label>
         <input type="text" name="email" id="email" th:value="!${exito}? ${contacto.email}">
+        <!-- Aquí busca dentro de "contacto" el campo "email -->
+        <!-- !${exito}? ${contacto.email}
+                ^              ^
+                │              │
+             condición     qué mostrar si la condición es true -->
+
+
     </p>
     <p>
         <label for="message">Mensaje: </label>

@@ -3,6 +3,10 @@ package com.example.estudio.model;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+
+// CÓDIGO PARA REPASAR VALIDACIONES SENCILLAS
+
+
 public record ModeloFormularioContacto(
 
 

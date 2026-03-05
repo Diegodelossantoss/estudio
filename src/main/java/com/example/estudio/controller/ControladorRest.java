@@ -1,5 +1,9 @@
-package com.example.estudio.controller;
+// Maneja everything lo relacionado con la API. Devuelve JSON no HTML
 
+// CÓDIGO DE MANEJO DE CONTADORES, POST, GET, PUT Y DELETE
+
+
+package com.example.estudio.controller;
 import com.example.estudio.model.ModeloContador;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +19,7 @@ public class ControladorRest {
     // contadores -> almacén temporal donde guardamos todos los contadores
 
 
+
     @PostMapping("/api/contadores")
     // EL POST SE HACE DESDE POSTMAN
     //
@@ -24,9 +29,8 @@ public class ControladorRest {
     //   }
     //
     // Dice de dónde se reciben las peticiones, en este caso de xxxxxxx/api/contadores
-
     @ResponseStatus(HttpStatus.CREATED)
-    // Dice a Spring que devuelva este código
+    // Dice a Spring que devuelva ese código "CREATED"
     public ModeloContador crea(@RequestBody ModeloContador contadorNuevo) {
         // Recibe los datos del contador y los convierte en un objeto ModeloContador que lo llama contadorNuevo
         contadores.put(contadorNuevo.nombre(), contadorNuevo);
