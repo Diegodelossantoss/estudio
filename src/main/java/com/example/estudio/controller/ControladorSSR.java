@@ -28,6 +28,9 @@ public class ControladorSSR {
     @GetMapping("/saludo")
     public String saludo(@RequestParam(name="nombre", required=false, defaultValue="Mundo") String nombre, Model model)
     {
+        if (true) throw new RuntimeException("Error provocado");
+        // if(true) siempre va a ser verdadero, así que siempre se ejecuta
+        // Crea un error a proposito para ver que mi página error funciona
         model.addAttribute("nombre", nombre);
         return "saludo";
     }

@@ -4,11 +4,14 @@
 
 
 package com.example.estudio.controller;
+import com.example.estudio.exception.ExcepcionContadorIncorrecto;
+import com.example.estudio.model.ModeloCampoIncorrecto;
 import com.example.estudio.model.ModeloContador;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -79,6 +82,22 @@ public class ControladorRest {
         return contadores.remove(nombre);
         // Elimina el contador con el {nombre} que has puesto
     }
+
+
+
+
+
+    @ExceptionHandler(ExcepcionContadorIncorrecto.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public List<ModeloCampoIncorrecto> contadorIncorrecto(ExcepcionContadorIncorrecto ex) {
+        return ex.getErrores().stream().map(error -> new ModeloCampoIncorrecto(
+                error.getDefaultMessage(), error.getField(), error.getRejectedValue()
+        )).toList();
+    }
+
+
+
+
 
 
 }
