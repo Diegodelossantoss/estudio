@@ -1,5 +1,6 @@
 package com.example.estudio.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -16,7 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 
 
-
 @Configuration @EnableWebSecurity @EnableMethodSecurity @EnableScheduling
 // @Configuration le dice a Spring que esta clase tiene configuración que debe leer al arrancar
 // @EnableWebSecurity activa el sistema de seguridad de Spring.
@@ -24,6 +24,14 @@ import org.springframework.security.web.SecurityFilterChain;
 // @EnableScheduling sin esto, los @Scheduled se ignoran completamente
 
 public class ConfiguracionSeguridad {
+
+
+    @Value("${el.nombre}") private String nombreUsuario;
+    @Value("${la.clave}") private String claveUsuario;
+    // Le dice a Spring: "busca la propiedad app.usuario.nombre en application.properties
+    // y mete su valor en la variable nombreUsuario".
+    // Cuando arranca la app, Spring lee el fichero y rellena automáticamente esas variables.
+    // nombreUsuario valdrá "usuario" y claveUsuario valdrá "clave".
 
 
     @Bean public SecurityFilterChain configuracion(HttpSecurity http) throws Exception {
@@ -39,6 +47,7 @@ public class ConfiguracionSeguridad {
                 // "Acepta también usuario y contraseña mandados directamente en la cabecera."
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"));
                 // "para rutas que empiecen por /api/ no exijas el token CSRF"
+
         return http.build();
         // Después de configurar todos los interruptores, esta línea construye y aplica toda la configuración.
     }
@@ -50,12 +59,13 @@ public class ConfiguracionSeguridad {
         // Crea un usuario con los 3 atributos de abajo
         UserDetails user = User.withDefaultPasswordEncoder()
                 // UserDetaisl viene de Spring
-                .username("usuario")
-                .password("clave")
+                .username(nombreUsuario)
+                .password(claveUsuario)
                 .roles("USER")
                 // esto anterior rellena la ficha
                 .build();
                 // .build() construye la ficha
+        // Ha creado un usuario con nombreUsuario = el.nombre = usuario y claveUsuario = la.clave = clave
 
         UserDetails admin = User.withDefaultPasswordEncoder()
                 .username("admin")
@@ -63,6 +73,7 @@ public class ConfiguracionSeguridad {
                 .roles("ADMIN")
                 .build();
         // Crea un usuario admin con los anteriores 3 parámetros
+        // Ha creado un usuario con username = admin y password = clave
 
         return new InMemoryUserDetailsManager(user, admin);
         // Guarda esta ficha en la memoria
